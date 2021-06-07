@@ -32,8 +32,10 @@
         </q-form>
       </div>
       <div class="col-6">
-          <h5>Ingresos: {{ingresosSum}}</h5>
-          <h5>Gastos: {{gastosSum}}</h5>
+          <h4>{{moneyFormat(config.firstAmount)}}</h4>
+          <h5>Ingresos: {{moneyFormat(ingresosSum)}}</h5>
+          <h5>Gastos: {{moneyFormat(gastosSum)}}</h5>
+          <h2>{{moneyFormat(actualAmount)}}</h2>
       </div>
     </div>
     <div class="row q-col-gutter-sm">
@@ -66,12 +68,6 @@ import { useQuasar } from 'quasar';
 
 import { defineComponent,ref,onMounted,computed } from 'vue';
 
-const columns = [
-  { name: 'date', label: 'Fecha', field: 'date', sortable: true },
-  { name: 'title', label: 'Titulo', field: 'title' },
-  { name: 'amount', label: 'Cantidad', field: 'amount', sortable: true }
-];
-
 export default defineComponent({
   name: 'PageIndex',
   setup(){
@@ -82,6 +78,15 @@ export default defineComponent({
     const ingresos = ref([]);
     const gastos = ref([]);
     const addForm = ref(null);
+    const config = ref({
+      firstAmount: 1000000
+    });
+
+    const columns = [
+      { name: 'date', label: 'Fecha', field: 'date', sortable: true },
+      { name: 'title', label: 'Titulo', field: 'title' },
+      { name: 'amount', label: 'Cantidad',field: 'amount', sortable: true, format: val => moneyFormat(val) }
+    ];
 
     $q.dark.set(true);
 
@@ -95,11 +100,25 @@ export default defineComponent({
 
     const ingresosSum = computed(() => {
       return getSumByKey(ingresos.value,'amount');
-    })
+    });
 
     const gastosSum = computed(() => {
       return getSumByKey(gastos.value,'amount');
-    })
+    });
+
+    const actualAmount = computed(()=>{
+      return config.value.firstAmount+ingresosSum.value-gastosSum.value;
+    });
+
+    const moneyFormat = string=>{
+      let money = Number(string).toLocaleString('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      });
+      console.log(money);
+      return money;
+    };
 
     const getSumByKey = (arr, key) => {
       return arr.reduce((accumulator, current) => accumulator + Number(current[key]), 0)
@@ -147,6 +166,8 @@ export default defineComponent({
     };
 
     return{
+      moneyFormat,
+      config,
       title,
       amount,
       type,
@@ -157,6 +178,7 @@ export default defineComponent({
       onSubmit,
       ingresosSum,
       gastosSum,
+      actualAmount,
       addForm
     }
   }
