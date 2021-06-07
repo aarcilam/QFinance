@@ -5,9 +5,22 @@
         <q-form
           @submit="onSubmit"
           class="q-gutter-md"
+          ref="addForm"
         >
-          <q-input placeholder="Titulo" outlined v-model="title" />
-          <q-input placeholder="Cantidad" outlined v-model="amount" />
+          <q-input 
+          placeholder="Titulo" 
+          outlined 
+          v-model="title" 
+          lazy-rules
+          :rules="[ val => val && val.length > 0 || 'El titulo tiene que tener un valor']" 
+          />
+          <q-input 
+          placeholder="Cantidad" 
+          outlined 
+          v-model="amount" 
+          lazy-rules
+          :rules="[ val => val && val.length > 0 || 'Ingresa la cantidad']" 
+          />
           <q-toggle
             v-model="type"
             checked-icon="price_check"
@@ -18,6 +31,10 @@
           <q-btn color="primary" icon="check" label="Guardar" type="submit" />
         </q-form>
       </div>
+      <div class="col-6">
+          <h5>Ingresos: {{ingresosSum}}</h5>
+          <h5>Gastos: {{gastosSum}}</h5>
+      </div>
     </div>
     <div class="row q-col-gutter-sm">
       <div class="col-12">
@@ -25,7 +42,7 @@
       </div>
       <div class="col-6">
         <q-table
-          title="Table Title"
+          title="Ingresos"
           :rows="ingresos"
           :columns="columns"
           row-key="id"
@@ -33,7 +50,7 @@
       </div>
       <div class="col-6">
         <q-table
-          title="Table Title"
+          title="Gastos"
           :rows="gastos"
           :columns="columns"
           row-key="id"
@@ -46,12 +63,13 @@
 
 <script>
 import { useQuasar } from 'quasar';
+
 import { defineComponent,ref,onMounted,computed } from 'vue';
 
 const columns = [
-  { name: 'id', label: 'Id', field: 'id', sortable: true },
-  { name: 'title', label: 'title', field: 'title' },
-  { name: 'amount', label: 'amount', field: 'amount', sortable: true }
+  { name: 'date', label: 'Fecha', field: 'date', sortable: true },
+  { name: 'title', label: 'Titulo', field: 'title' },
+  { name: 'amount', label: 'Cantidad', field: 'amount', sortable: true }
 ];
 
 export default defineComponent({
@@ -63,6 +81,7 @@ export default defineComponent({
     const type = ref(false);
     const ingresos = ref([]);
     const gastos = ref([]);
+    const addForm = ref(null);
 
     $q.dark.set(true);
 
@@ -73,6 +92,18 @@ export default defineComponent({
       }
       return name;
     })
+
+    const ingresosSum = computed(() => {
+      return getSumByKey(ingresos.value,'amount');
+    })
+
+    const gastosSum = computed(() => {
+      return getSumByKey(gastos.value,'amount');
+    })
+
+    const getSumByKey = (arr, key) => {
+      return arr.reduce((accumulator, current) => accumulator + Number(current[key]), 0)
+    }
     
     onMounted(() => {
       
@@ -96,7 +127,7 @@ export default defineComponent({
 
     const onSubmit = ()=>{
       let value = {
-          date:'lun',
+          date:new Date().toISOString().slice(0, 10),
           id:0,
           title: title.value,
           amount: amount.value
@@ -109,8 +140,9 @@ export default defineComponent({
         ingresos.value.push(value);
         $q.localStorage.set('ingresos', JSON.stringify(ingresos.value));
       }
-      
-      
+
+      $q.notify('Valor añadido')
+      addForm.value.resetValidation();
       reset();
     };
 
@@ -122,7 +154,10 @@ export default defineComponent({
       ingresos,
       columns,
       gastos,
-      onSubmit
+      onSubmit,
+      ingresosSum,
+      gastosSum,
+      addForm
     }
   }
 })
