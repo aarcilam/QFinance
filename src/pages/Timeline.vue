@@ -11,6 +11,8 @@
             :key="entrada.id"
             :title="entrada.title"
             :subtitle="entrada.date"
+            :color="entrada.type == 'ingreso' ? 'green' : 'red' "
+            :icon="entrada.type == 'ingreso' ? 'savings' : 'price_check' "
             >
             <div>
                 {{entrada.amount}}
@@ -49,7 +51,7 @@ export default defineComponent({
         })
 
         const entradas = computed(()=>{
-            let mixed = {...ingresos.value, ...gastos.value };
+            let mixed = [...ingresos.value, ...gastos.value ];
 
             return mixed;
         })
