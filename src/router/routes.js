@@ -2,11 +2,21 @@ const routes = [{
         path: '/',
         component: () =>
             import ('layouts/MainLayout.vue'),
-        children: [
-            { path: '', component: () =>
-                    import ('pages/Index.vue') },
-            { path: 'timeline', component: () =>
-                    import ('pages/Timeline.vue') }
+        children: [{
+                path: '',
+                component: () =>
+                    import ('pages/Index.vue')
+            },
+            {
+                path: 'timeline',
+                component: () =>
+                    import ('pages/Timeline.vue')
+            },
+            {
+                path: 'expimp',
+                component: () =>
+                    import ('pages/ExportImport.vue')
+            }
         ]
     },
 

@@ -25,11 +25,13 @@
             <br>
             <q-separator />
             <br>
-            <q-btn color="primary" label="Ver linea de tiempo" to="/timeline"/>
-            <q-btn color="danger" label="Eliminar datos" v-on:click="deleteInfo()"  />
+            <q-btn color="negative" label="Eliminar datos" v-on:click="deleteInfo()"  />
           </div>
         </div>
       </q-btn-dropdown>
+      <q-btn color="primary" label="Ver linea de tiempo" to="/timeline"/>
+      <q-btn color="primary" label="datos en json" to="/expimp"/>
+      <q-btn color="positive" label="Guardar cambios" v-on:click="saveChanges" v-if="!savedChanges"/>
     </div>
     <div class="row">
       <div class="col-6 q-py-xl">
@@ -66,11 +68,29 @@
           </q-btn>
         </q-form>
       </div>
-      <div class="col-6">
-          <h4>{{moneyFormat(config.firstAmount)}}</h4>
-          <h5>Ingresos: {{moneyFormat(ingresosSum)}}</h5>
-          <h5>Gastos: {{moneyFormat(gastosSum)}}</h5>
-          <h2>{{moneyFormat(actualAmount)}}</h2>
+      <div class="col-6 q-pa-md">
+        <q-markup-table dark class="bg-primary">
+          <thead>
+            <tr>
+              <th class="text-left">Dinero incial</th>
+              <th class="text-right">{{moneyFormat(config.firstAmount)}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left">Ingresos</td>
+              <td class="text-right">{{moneyFormat(ingresosSum)}}</td>
+            </tr>
+            <tr>
+              <td class="text-left">Gastos</td>
+              <td class="text-right">{{moneyFormat(gastosSum)}}</td>
+            </tr>
+            <tr>
+              <td class="text-left">Total actual</td>
+              <td class="text-right">{{moneyFormat(actualAmount)}}</td>
+            </tr>
+          </tbody>
+        </q-markup-table>
       </div>
     </div>
     <div class="row q-col-gutter-sm">
@@ -80,7 +100,35 @@
           :rows="ingresos"
           :columns="columns"
           row-key="id"
-        />
+        >
+        <template v-slot:body-cell-title="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              {{ props.value }}
+              <q-popup-edit v-model="props.row.title">
+                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
+              </q-popup-edit> 
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-amount="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              {{ props.value }}
+              <q-popup-edit v-model="props.row.amount">
+                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
+              </q-popup-edit> 
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-actions="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              <q-icon name="delete" v-on:click="deleteValue('ingresos',props.rowIndex)" />
+            </div>
+          </q-td>
+        </template>
+        </q-table>
       </div>
       <div class="col-6">
         <q-table
@@ -88,7 +136,35 @@
           :rows="gastos"
           :columns="columns"
           row-key="id"
-        />
+        >
+        <template v-slot:body-cell-title="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              {{ props.value }}
+              <q-popup-edit v-model="props.row.title">
+                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
+              </q-popup-edit> 
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-amount="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              {{ props.value }}
+              <q-popup-edit v-model="props.row.amount">
+                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
+              </q-popup-edit> 
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-actions="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              <q-icon name="delete" v-on:click="deleteValue('gastos',props.rowIndex)" />
+            </div>
+          </q-td>
+        </template>
+        </q-table>
       </div>
     </div>
 
@@ -110,15 +186,17 @@ export default defineComponent({
     const ingresos = ref([]);
     const gastos = ref([]);
     const addForm = ref(null);
-    const submitting = ref(false)
+    const submitting = ref(false);
+    const savedChanges = ref(true);
     const config = ref({
-      firstAmount: 1000000
+      firstAmount: null
     });
 
     const columns = [
       { name: 'date', label: 'Fecha', field: 'date', sortable: true },
       { name: 'title', label: 'Titulo', field: 'title' },
-      { name: 'amount', label: 'Cantidad',field: 'amount', sortable: true, format: val => moneyFormat(val) }
+      { name: 'amount', label: 'Cantidad',field: 'amount', sortable: true, format: val => moneyFormat(val) },
+      { name: 'actions', label: 'Acciones', field: 'actions' },
     ];
 
     $q.dark.set(true);
@@ -153,7 +231,7 @@ export default defineComponent({
     };
 
     const getSumByKey = (arr, key) => {
-      return arr.reduce((accumulator, current) => accumulator + Number(current[key]), 0)
+      return arr.filter(({archived}) => archived === false).reduce((accumulator, current) => accumulator + Number(current[key]), 0);
     }
 
     const deleteInfo = ()=>{
@@ -172,6 +250,28 @@ export default defineComponent({
           ]
         })
     }
+
+    const deleteValue = (type,key) =>{
+      if(type=='gastos'){
+        gastos.value.splice(key, 1);
+      }else{
+        ingresos.value.splice(key, 1);
+      }
+      $q.notify('Dato eliminado');
+      saveChanges();
+    };
+
+    const infoChange = ()=>{
+      savedChanges.value = false;
+    };
+
+    const saveChanges = ()=>{
+      $q.localStorage.set('gastos', JSON.stringify(gastos.value));
+      $q.localStorage.set('ingresos', JSON.stringify(ingresos.value));
+      $q.localStorage.set('config', JSON.stringify(config.value));
+      $q.notify('Datos guardados');
+      savedChanges.value = true;
+    };
     
     onMounted(() => {
       
@@ -205,7 +305,8 @@ export default defineComponent({
           id:0,
           title: title.value,
           amount: amount.value,
-          type: typeName
+          type: typeName,
+          archived: false
         };
 
       if(type.value==true){
@@ -226,7 +327,7 @@ export default defineComponent({
       
       $q.localStorage.set('config', JSON.stringify(config.value));
 
-      $q.notify('Configuracion guardada')
+      $q.notify('Configuracion guardada');
 
     };
 
@@ -247,7 +348,11 @@ export default defineComponent({
       addForm,
       deleteInfo,
       submitting,
-      submitConfig
+      submitConfig,
+      savedChanges,
+      infoChange,
+      saveChanges,
+      deleteValue
     }
   }
 })
