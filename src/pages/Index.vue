@@ -38,6 +38,21 @@
           class="q-gutter-md"
           ref="addForm"
         >
+          <q-btn-toggle
+            v-model="formValue"
+            spread
+            no-caps
+            rounded
+            unelevated
+            toggle-color="primary"
+            color=""
+            text-color="white"
+            :options="[
+              {label: 'Movimiento', value: '1'},
+              {label: 'Pendiente', value: '2'},
+              {label: 'Deuda', value: '3'}
+            ]"
+          />
           <q-input 
           placeholder="Titulo" 
           outlined 
@@ -58,6 +73,7 @@
             color="red"
             :label="'Añadir un '+typeName"
             unchecked-icon="savings"
+            v-if="formValue=='1'"
           />
           <q-btn color="primary" :loading="submitting" icon="add" label="Añadir" type="submit">
             <template v-slot:loading>
@@ -165,7 +181,82 @@
         </q-table>
       </div>
     </div>
-
+    <br>
+    <br>
+    <div class="row q-col-gutter-sm">
+      <div class="col-6">
+        <q-table
+          title="pendientes"
+          :rows="pendientes"
+          :columns="columns"
+          row-key="id"
+        >
+        <template v-slot:body-cell-title="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              {{ props.value }}
+              <q-popup-edit v-model="props.row.title">
+                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
+              </q-popup-edit> 
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-amount="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              {{ props.value }}
+              <q-popup-edit v-model="props.row.amount">
+                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
+              </q-popup-edit> 
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-actions="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              <q-icon name="delete" v-on:click="deleteValue('pendientes',props.rowIndex)" />
+            </div>
+          </q-td>
+        </template>
+        </q-table>
+      </div>
+      <div class="col-6">
+        <q-table
+          title="deudas"
+          :rows="deudas"
+          :columns="columns"
+          row-key="id"
+        >
+        <template v-slot:body-cell-title="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              {{ props.value }}
+              <q-popup-edit v-model="props.row.title">
+                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
+              </q-popup-edit> 
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-amount="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              {{ props.value }}
+              <q-popup-edit v-model="props.row.amount">
+                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
+              </q-popup-edit> 
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:body-cell-actions="props">
+          <q-td :props="props">
+            <div class="my-table-details">
+              <q-icon name="delete" v-on:click="deleteValue('deudas',props.rowIndex)" />
+            </div>
+          </q-td>
+        </template>
+        </q-table>
+      </div>
+    </div>
   </q-page>
 </template>
 
@@ -183,9 +274,12 @@ export default defineComponent({
     const type = ref(false);
     const ingresos = ref([]);
     const gastos = ref([]);
+    const pendientes = ref([]);
+    const deudas = ref([]);
     const addForm = ref(null);
     const submitting = ref(false);
     const savedChanges = ref(true);
+    const formValue = ref('1');
     const config = ref({
       firstAmount: null
     });
@@ -227,6 +321,8 @@ export default defineComponent({
         gastos.value = data.gastos;
         ingresos.value = data.ingresos;
         config.value = data.config;
+        pendientes.value = data.pendientes;
+        deudas.value = data.deudas;
       }
       
     })
@@ -263,8 +359,15 @@ export default defineComponent({
     const deleteValue = (type,key) =>{
       if(type=='gastos'){
         gastos.value.splice(key, 1);
-      }else{
+      }
+      if(type=='ingresos'){
         ingresos.value.splice(key, 1);
+      }
+      if(type=='pendientes'){
+        pendientes.value.splice(key, 1);
+      }
+      if(type=='deudas'){
+        deudas.value.splice(key, 1);
       }
       $q.notify('Dato eliminado');
       saveChanges();
@@ -275,7 +378,15 @@ export default defineComponent({
     };
 
     const saveChanges = ()=>{
-      $q.localStorage.set('alldata', JSON.stringify({config:config.value,ingresos:ingresos.value,gastos:gastos.value}));
+      $q.localStorage.set('alldata', JSON.stringify(
+        {
+          config:config.value,
+          ingresos:ingresos.value,
+          gastos:gastos.value,
+          pendientes:pendientes.value,
+          deudas:deudas.value
+        }
+        ));
       $q.notify('Datos guardados');
       savedChanges.value = true;
     };
@@ -288,19 +399,40 @@ export default defineComponent({
 
     const submitNewValue = ()=>{
       submitting.value = true;
-      let value = {
-          date:new Date().toISOString().slice(0, 10),
-          id:0,
-          title: title.value,
-          amount: amount.value,
-          type: typeName,
-          archived: false
-        };
-
-      if(type.value==true){
-        gastos.value.push(value);
-      }else{
-        ingresos.value.push(value);
+      let value = {};
+      switch (formValue.value) {
+        case '1':
+          value = {
+            date:new Date().toISOString().slice(0, 10),
+            title: title.value,
+            amount: amount.value,
+            type: typeName,
+            archived: false
+          };
+          if(type.value==true){
+            gastos.value.push(value);
+          }else{
+            ingresos.value.push(value);
+          }
+          break;
+        case '2':
+          value = {
+            date:new Date().toISOString().slice(0, 10),
+            title: title.value,
+            amount: amount.value,
+            archived: false
+          };
+          pendientes.value.push(value);
+          break;
+        case '3':
+          value = {
+            date:new Date().toISOString().slice(0, 10),
+            title: title.value,
+            amount: amount.value,
+            archived: false
+          };
+          deudas.value.push(value);
+          break;
       }
 
       saveChanges();
@@ -331,7 +463,10 @@ export default defineComponent({
       savedChanges,
       infoChange,
       saveChanges,
-      deleteValue
+      deleteValue,
+      formValue,
+      pendientes,
+      deudas
     }
   }
 })
