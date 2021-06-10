@@ -19,11 +19,6 @@ export default defineComponent({
     name:'ExportImport',
     setup(){
         const $q = useQuasar();
-        const ingresos = ref([]);
-        const gastos = ref([]);
-        const config = ref({
-            firstAmount: null
-        });
         const localData = ref('');
 
         onMounted(() => {
@@ -32,9 +27,6 @@ export default defineComponent({
             if(alldata){
                 let data = JSON.parse(alldata);
                 localData.value = alldata;
-                gastos.value = data.gastos;
-                ingresos.value = data.ingresos;
-                config.value = data.config;
             }
         
         })

@@ -41,8 +41,8 @@ export default defineComponent({
             let alldata = $q.localStorage.getItem('alldata');
             if(alldata){
                 let data = JSON.parse(alldata);
-                gastos.value = data.gastos;
-                ingresos.value = data.ingresos;
+                gastos.value = data.gastos || [];
+                ingresos.value = data.ingresos || [];
             }
         
         })

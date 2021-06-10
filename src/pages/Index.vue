@@ -318,11 +318,11 @@ export default defineComponent({
       let alldata = $q.localStorage.getItem('alldata');
       if(alldata){
         let data = JSON.parse(alldata);
-        gastos.value = data.gastos;
-        ingresos.value = data.ingresos;
-        config.value = data.config;
-        pendientes.value = data.pendientes;
-        deudas.value = data.deudas;
+        gastos.value = data.gastos || [];
+        ingresos.value = data.ingresos || [];
+        config.value = data.config || [];
+        pendientes.value = data.pendientes || [];
+        deudas.value = data.deudas || [];
       }
       
     })
