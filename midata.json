@@ -1,0 +1,85 @@
+{
+    "config": { "firstAmount": "20000000" },
+    "ingresos": [],
+    "gastos": [{
+            "date": "2021-06-10",
+            "id": 0,
+            "title": "polas partido colombia vic",
+            "amount": "40000",
+            "type": "gasto",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "id": 0,
+            "title": "forro cel ",
+            "amount": "20000",
+            "type": "gasto",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "id": 0,
+            "title": "pola con el calvo y cueros dolares",
+            "amount": "10000",
+            "type": "gasto",
+            "archived": false
+        }
+    ],
+    "pendientes": [{
+            "date": "2021-06-10",
+            "title": "speed seguros segundo pago",
+            "amount": "900000",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "title": "sumimascotas 2 pago",
+            "amount": "350000",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "title": "mercoya 3 pago",
+            "amount": "1250000",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "title": "activo 2 pago",
+            "amount": "600000",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "title": "la romana",
+            "amount": "500000",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "title": "doc vector 2",
+            "amount": "300000",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "title": "donkey doll 2 pago ",
+            "amount": "500000",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "title": "nelly pagina mexico 2 ",
+            "amount": "1200000",
+            "archived": false
+        },
+        {
+            "date": "2021-06-10",
+            "title": "mi mama me debe 200",
+            "amount": "200000",
+            "archived": false
+        }
+    ],
+    "deudas": []
+}
