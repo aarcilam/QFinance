@@ -1,9 +1,9 @@
 <template>
     <q-page padding>
         <q-btn color="primary" label="Back" to="/"/>
-        <q-timeline color="secondary">
+        <q-timeline color="secondary" class="q-pa-lg">
             <q-timeline-entry heading>
-            Timeline heading
+                Linea de tiempo movimientos
             </q-timeline-entry>
 
             <q-timeline-entry
@@ -50,8 +50,12 @@ export default defineComponent({
 
         const entradas = computed(()=>{
             let mixed = [...ingresos.value, ...gastos.value ];
-
-            return mixed;
+            let sort = mixed.sort(function(a, b) {
+                let dateA = new Date(a.date);
+                let dateB = new Date(b.date);
+                return dateB - dateA
+            });
+            return sort;
         })
 
         return{
