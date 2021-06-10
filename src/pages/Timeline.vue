@@ -38,14 +38,11 @@ export default defineComponent({
 
         onMounted(() => {
         
-            let ing = $q.localStorage.getItem('ingresos');
-            if(ing){
-                ingresos.value = JSON.parse(ing);
-            }
-
-            let gas = $q.localStorage.getItem('gastos');
-            if(gas){
-                gastos.value = JSON.parse(gas);
+            let alldata = $q.localStorage.getItem('alldata');
+            if(alldata){
+                let data = JSON.parse(alldata);
+                gastos.value = data.gastos;
+                ingresos.value = data.ingresos;
             }
         
         })

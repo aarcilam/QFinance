@@ -8,7 +8,6 @@
         <div class="row no-wrap q-pa-md">
           <div class="column items-center">
             <q-form
-              @submit="submitConfig"
               class="q-gutter-md"
               ref="addForm"
             >
@@ -18,9 +17,8 @@
               v-model="config.firstAmount" 
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'El valor actual tiene que tener un valor']" 
+              v-on:change="saveChanges"
               />
-              <q-btn color="primary" icon="check" label="Guardar" type="submit">
-              </q-btn>
             </q-form>
             <br>
             <q-separator />
@@ -221,6 +219,18 @@ export default defineComponent({
       return Number(config.value.firstAmount)+Number(ingresosSum.value)-Number(gastosSum.value);
     });
 
+    onMounted(() => {
+    
+      let alldata = $q.localStorage.getItem('alldata');
+      if(alldata){
+        let data = JSON.parse(alldata);
+        gastos.value = data.gastos;
+        ingresos.value = data.ingresos;
+        config.value = data.config;
+      }
+      
+    })
+
     const moneyFormat = string=>{
       let money = Number(string).toLocaleString('es-CO', {
         style: 'currency',
@@ -241,9 +251,8 @@ export default defineComponent({
           avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
           actions: [
             { label: 'Eliminar', color: 'red', handler: () => { 
-              $q.localStorage.set('gastos', JSON.stringify([]));
+              $q.localStorage.set('alldata', JSON.stringify([]));
               gastos.value = [];
-              $q.localStorage.set('ingresos', JSON.stringify([]));
               ingresos.value = [];
             } },
             { label: 'No', color: 'white', handler: () => { /* ... */ } }
@@ -266,31 +275,10 @@ export default defineComponent({
     };
 
     const saveChanges = ()=>{
-      $q.localStorage.set('gastos', JSON.stringify(gastos.value));
-      $q.localStorage.set('ingresos', JSON.stringify(ingresos.value));
-      $q.localStorage.set('config', JSON.stringify(config.value));
+      $q.localStorage.set('alldata', JSON.stringify({config:config.value,ingresos:ingresos.value,gastos:gastos.value}));
       $q.notify('Datos guardados');
       savedChanges.value = true;
     };
-    
-    onMounted(() => {
-      
-      let ing = $q.localStorage.getItem('ingresos');
-      if(ing){
-        ingresos.value = JSON.parse(ing);
-      }
-
-      let gas = $q.localStorage.getItem('gastos');
-      if(gas){
-        gastos.value = JSON.parse(gas);
-      }
-
-      let config_local = $q.localStorage.getItem('config');
-      if(config_local){
-        config.value = JSON.parse(config_local);
-      }
-      
-    })
 
     const reset=()=>{
       title.value = '';
@@ -311,24 +299,16 @@ export default defineComponent({
 
       if(type.value==true){
         gastos.value.push(value);
-        $q.localStorage.set('gastos', JSON.stringify(gastos.value));
       }else{
         ingresos.value.push(value);
-        $q.localStorage.set('ingresos', JSON.stringify(ingresos.value));
       }
+
+      saveChanges();
 
       $q.notify('Valor añadido')
       addForm.value.resetValidation();
       reset();
       submitting.value = false;
-    };
-
-    const submitConfig = ()=>{
-      
-      $q.localStorage.set('config', JSON.stringify(config.value));
-
-      $q.notify('Configuracion guardada');
-
     };
 
     return{
@@ -348,7 +328,6 @@ export default defineComponent({
       addForm,
       deleteInfo,
       submitting,
-      submitConfig,
       savedChanges,
       infoChange,
       saveChanges,
