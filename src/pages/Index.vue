@@ -32,7 +32,7 @@
       <q-btn color="positive" label="Guardar cambios" v-on:click="saveChanges" v-if="!savedChanges"/>
     </div>
     <div class="row">
-      <div class="col-6 q-py-xl">
+      <div class="col-12 col-sm-6 q-py-xl">
         <q-form
           @submit="submitNewValue"
           class="q-gutter-md"
@@ -82,7 +82,7 @@
           </q-btn>
         </q-form>
       </div>
-      <div class="col-6 q-pa-md">
+      <div class="col-12 col-sm-6 q-pa-md">
         <q-markup-table dark class="bg-primary">
           <thead>
             <tr>
@@ -108,7 +108,7 @@
       </div>
     </div>
     <div class="row q-col-gutter-sm">
-      <div class="col-6">
+      <div class="col-12 col-sm-6">
         <q-table
           title="Ingresos"
           :rows="ingresos"
@@ -144,7 +144,7 @@
         </template>
         </q-table>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-sm-6">
         <q-table
           title="Gastos"
           :rows="gastos"
@@ -184,7 +184,7 @@
     <br>
     <br>
     <div class="row q-col-gutter-sm">
-      <div class="col-6">
+      <div class="col-12 col-sm-6">
         <q-table
           title="pendientes"
           :rows="pendientes"
@@ -220,7 +220,7 @@
         </template>
         </q-table>
       </div>
-      <div class="col-6">
+      <div class="col-12 col-sm-6">
         <q-table
           title="deudas"
           :rows="deudas"
