@@ -109,152 +109,20 @@
     </div>
     <div class="row q-col-gutter-sm">
       <div class="col-12 col-sm-6">
-        <q-table
-          title="Ingresos"
-          :rows="ingresos"
-          :columns="columns"
-          row-key="id"
-        >
-        <template v-slot:body-cell-title="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              {{ props.value }}
-              <q-popup-edit v-model="props.row.title">
-                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
-              </q-popup-edit> 
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-amount="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              {{ props.value }}
-              <q-popup-edit v-model="props.row.amount">
-                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
-              </q-popup-edit> 
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              <q-icon name="delete" v-on:click="deleteValue('ingresos',props.rowIndex)" />
-            </div>
-          </q-td>
-        </template>
-        </q-table>
+        <TableComponent :rows="ingresos" :columns="columns" type="ingresos" @deleteRow="deleteValue" @saveChanges="saveChanges" />
       </div>
       <div class="col-12 col-sm-6">
-        <q-table
-          title="Gastos"
-          :rows="gastos"
-          :columns="columns"
-          row-key="id"
-        >
-        <template v-slot:body-cell-title="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              {{ props.value }}
-              <q-popup-edit v-model="props.row.title">
-                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
-              </q-popup-edit> 
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-amount="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              {{ props.value }}
-              <q-popup-edit v-model="props.row.amount">
-                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
-              </q-popup-edit> 
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              <q-icon name="delete" v-on:click="deleteValue('gastos',props.rowIndex)" />
-            </div>
-          </q-td>
-        </template>
-        </q-table>
+        <TableComponent :rows="gastos" :columns="columns" type="gastos" @deleteRow="deleteValue" @saveChanges="saveChanges" />
       </div>
     </div>
     <br>
     <br>
     <div class="row q-col-gutter-sm">
       <div class="col-12 col-sm-6">
-        <q-table
-          title="pendientes"
-          :rows="pendientes"
-          :columns="columns"
-          row-key="id"
-        >
-        <template v-slot:body-cell-title="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              {{ props.value }}
-              <q-popup-edit v-model="props.row.title">
-                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
-              </q-popup-edit> 
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-amount="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              {{ props.value }}
-              <q-popup-edit v-model="props.row.amount">
-                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
-              </q-popup-edit> 
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              <q-icon name="delete" v-on:click="deleteValue('pendientes',props.rowIndex)" />
-            </div>
-          </q-td>
-        </template>
-        </q-table>
+        <TableComponent :rows="pendientes" :columns="columns" type="pendientes" @deleteRow="deleteValue" @saveChanges="saveChanges" />
       </div>
       <div class="col-12 col-sm-6">
-        <q-table
-          title="deudas"
-          :rows="deudas"
-          :columns="columns"
-          row-key="id"
-        >
-        <template v-slot:body-cell-title="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              {{ props.value }}
-              <q-popup-edit v-model="props.row.title">
-                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
-              </q-popup-edit> 
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-amount="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              {{ props.value }}
-              <q-popup-edit v-model="props.row.amount">
-                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
-              </q-popup-edit> 
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <div class="my-table-details">
-              <q-icon name="delete" v-on:click="deleteValue('deudas',props.rowIndex)" />
-            </div>
-          </q-td>
-        </template>
-        </q-table>
+        <TableComponent :rows="deudas" :columns="columns" type="deudas" @deleteRow="deleteValue" @saveChanges="saveChanges" />
       </div>
     </div>
   </q-page>
@@ -264,9 +132,12 @@
 import { useQuasar } from 'quasar';
 
 import { defineComponent,ref,onMounted,computed } from 'vue';
+import {moneyFormat} from '../helper';
+import TableComponent from '../components/Table.vue';
 
 export default defineComponent({
   name: 'PageIndex',
+  components: {TableComponent},
   setup(){
     const $q = useQuasar();
     const title = ref('');
@@ -327,15 +198,6 @@ export default defineComponent({
       
     })
 
-    const moneyFormat = string=>{
-      let money = Number(string).toLocaleString('es-CO', {
-        style: 'currency',
-        currency: 'COP',
-        minimumFractionDigits: 0
-      });
-      return money;
-    };
-
     const getSumByKey = (arr, key) => {
       return arr.filter(({archived}) => archived === false).reduce((accumulator, current) => accumulator + Number(current[key]), 0);
     }
@@ -371,10 +233,6 @@ export default defineComponent({
       }
       $q.notify('Dato eliminado');
       saveChanges();
-    };
-
-    const infoChange = ()=>{
-      savedChanges.value = false;
     };
 
     const saveChanges = ()=>{
@@ -461,7 +319,6 @@ export default defineComponent({
       deleteInfo,
       submitting,
       savedChanges,
-      infoChange,
       saveChanges,
       deleteValue,
       formValue,

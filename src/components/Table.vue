@@ -1,0 +1,64 @@
+<template>
+    <q-table
+        :title="type"
+        :rows="rows"
+        :columns="columns"
+        row-key="id"
+    >
+        <template v-slot:body-cell-title="props">
+            <q-td :props="props">
+            <div class="my-table-details">
+                {{ props.value }}
+                <q-popup-edit v-model="props.row.title">
+                <q-input v-model="props.row.title" dense autofocus counter v-on:change="saveChanges" />
+                </q-popup-edit> 
+            </div>
+            </q-td>
+        </template>
+        <template v-slot:body-cell-amount="props">
+            <q-td :props="props">
+            <div class="my-table-details">
+                {{ props.value }}
+                <q-popup-edit v-model="props.row.amount">
+                <q-input v-model="props.row.amount" dense autofocus counter v-on:change="saveChanges" />
+                </q-popup-edit> 
+            </div>
+            </q-td>
+        </template>
+        <template v-slot:body-cell-actions="props">
+            <q-td :props="props">
+            <div class="my-table-details">
+                <q-icon name="delete" v-on:click="deleteRow(props.rowIndex)" />
+            </div>
+            </q-td>
+        </template>
+    </q-table>
+</template>
+
+<script>
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+    name:'TableComponent',
+    props: ['rows','columns','type'],
+    setup(props,{emit}){
+        
+        const deleteRow=key=>{
+            emit('deleteRow',props.type , key)
+        };
+
+        const saveChanges=()=>{
+            emit('saveChanges')
+        };
+
+        return {
+            deleteRow,
+            saveChanges
+        }
+    }
+})
+</script>
+
+<style>
+
+</style>

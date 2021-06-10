@@ -15,7 +15,7 @@
             :icon="entrada.type == 'ingreso' ? 'savings' : 'price_check' "
             >
             <div>
-                {{entrada.amount}}
+                {{moneyFormat(entrada.amount)}}
             </div>
             </q-timeline-entry>
 
@@ -26,6 +26,7 @@
 <script>
 import { defineComponent,ref,onMounted,computed } from 'vue';
 import { useQuasar } from 'quasar';
+import {moneyFormat} from '../helper';
 
 export default defineComponent({
     name:'PageTimeline',
@@ -54,7 +55,8 @@ export default defineComponent({
         })
 
         return{
-            entradas
+            entradas,
+            moneyFormat
         }
     }
 })
