@@ -5,8 +5,8 @@
             <q-slide-item v-for="(row, index) in rows" :key="row.title"  @left="onLeft" left-color="secondary">
                 <template v-slot:left>
                     <q-icon name="delete" v-on:click="deleteItem(index)" />
-                    <q-icon name="edit" />
-                    <q-icon name="done" />
+                    <!-- <q-icon name="edit" />
+                    <q-icon name="done" /> -->
                 </template>
 
                 <q-item>
@@ -16,7 +16,7 @@
                     :icon="row.type == 'ingreso' ? 'savings' : 'price_check' "
                     text-color="white" />
                 </q-item-section>
-                <q-item-section>{{row.title}} - {{row.amount}}</q-item-section>
+                <q-item-section>{{row.title}} <strong>{{moneyFormat(row.amount)}}</strong></q-item-section>
                 </q-item>
             </q-slide-item>
         </q-list>
@@ -29,6 +29,7 @@
 <script>
 import { onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex';
+import {moneyFormat} from '../helper';
 
 export default {
     name:'SlideList',
@@ -60,7 +61,8 @@ export default {
 
         return {
             onLeft,
-            deleteItem
+            deleteItem,
+            moneyFormat
         }
     }
 }

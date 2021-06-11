@@ -1,12 +1,8 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-toolbar class="bg-primary text-white">
-
-      <q-toolbar-title>QFinance</q-toolbar-title>
-
-    </q-toolbar>
     <q-page-container>
       <router-view />
+      <AddFormComponent/>
       <q-page-sticky expand class="q-pa-lg" position="bottom" :offset="[0, 0]">
         <q-btn-group class="full-width" rounded>
           <q-btn v-on:click="active=1" :class="{'bg-secondary':active==1}" size="md" padding="sm" color="primary" class="full-width" label="" icon="home" to="/" />
@@ -21,11 +17,11 @@
 <script>
 
 import { defineComponent,ref } from 'vue'
+import AddFormComponent from '../components/AddForm.vue';
 
 export default defineComponent({
   name: 'MainLayout',
-
-
+  components: {AddFormComponent},
   setup () {
     const active = ref(1);
 

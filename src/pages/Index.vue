@@ -29,56 +29,6 @@
       </q-btn-dropdown>
     </div>
     <div class="row">
-      <div class="col-12 col-sm-6 q-py-xl">
-        <q-form
-          @submit="submitNewValue"
-          class="q-gutter-md"
-          ref="addForm"
-        >
-          <q-btn-toggle
-            v-model="formValue"
-            spread
-            no-caps
-            rounded
-            unelevated
-            toggle-color="primary"
-            color=""
-            text-color="white"
-            :options="[
-              {label: 'Movimiento', value: '1'},
-              {label: 'Pendiente', value: '2'},
-              {label: 'Deuda', value: '3'}
-            ]"
-          />
-          <q-input 
-          placeholder="Titulo" 
-          outlined 
-          v-model="title" 
-          lazy-rules
-          :rules="[ val => val && val.length > 0 || 'El titulo tiene que tener un valor']" 
-          />
-          <q-input 
-          placeholder="Cantidad" 
-          outlined 
-          v-model="amount" 
-          lazy-rules
-          :rules="[ val => val && val.length > 0 || 'Ingresa la cantidad']" 
-          />
-          <q-toggle
-            v-model="type"
-            checked-icon="price_check"
-            color="red"
-            :label="'Añadir un '+typeName"
-            unchecked-icon="savings"
-            v-if="formValue=='1'"
-          />
-          <q-btn color="primary" rounded :loading="submitting" icon="add" label="Añadir" type="submit">
-            <template v-slot:loading>
-              <q-spinner-facebook />
-            </template>
-          </q-btn>
-        </q-form>
-      </div>
       <div class="col-12 col-sm-6 q-pa-md">
         <q-markup-table dark class="bg-primary">
           <thead>
@@ -141,18 +91,12 @@ export default defineComponent({
     const $q = useQuasar();
     const store = useStore();
     store.dispatch('getLocal');   
-    const title = ref('');
-    const amount = ref('');
-    const type = ref(false);
     const firstAmount= ref(store.getters.getConfig.firstAmount);
     const ingresos = store.getters.getIngresos;
     const gastos = store.getters.getGastos;
     const pendientes = store.getters.getPendientes;
     const deudas = store.getters.getDeudas;
     const config = store.getters.getConfig;
-    const addForm = ref(null);
-    const submitting = ref(false);
-    const formValue = ref('1');
 
     const columns = [
       { name: 'date', label: 'Fecha', field: 'date', sortable: true },
@@ -162,14 +106,6 @@ export default defineComponent({
     ];
 
     $q.dark.set(true);
-
-    const typeName = computed(() => {
-      let name='ingreso';
-      if(type.value==true){
-        name='gasto';
-      }
-      return name;
-    })
 
     const ingresosSum = computed(() => {
       return getSumByKey(ingresos,'amount');
@@ -217,87 +153,17 @@ export default defineComponent({
       });
     };
 
-    const reset=()=>{
-      title.value = '';
-      amount.value = '';
-      type.value = false;
-    }
-
-    const submitNewValue = ()=>{
-      submitting.value = true;
-      let value = {};
-      switch (formValue.value) {
-        case '1':
-          value = {
-            date:new Date().toISOString().slice(0, 10),
-            title: title.value,
-            amount: amount.value,
-            type: typeName.value,
-            archived: false
-          };
-          if(type.value==true){
-            store.dispatch('addValue',{
-              type:'gastos',
-              value
-            });
-          }else{
-            store.dispatch('addValue',{
-              type:'ingresos',
-              value
-            });
-          }
-          break;
-        case '2':
-          value = {
-            date:new Date().toISOString().slice(0, 10),
-            title: title.value,
-            amount: amount.value,
-            archived: false
-          };
-          store.dispatch('addValue',{
-            type:'pendientes',
-            value
-          });
-          break;
-        case '3':
-          value = {
-            date:new Date().toISOString().slice(0, 10),
-            title: title.value,
-            amount: amount.value,
-            archived: false
-          };
-          store.dispatch('addValue',{
-            type:'deudas',
-            value
-          });
-          break;
-      }
-
-      $q.notify('Valor añadido')
-      addForm.value.resetValidation();
-      reset();
-      submitting.value = false;
-    };
-
     return{
       moneyFormat,
       config,
-      title,
-      amount,
-      type,
-      typeName,
       ingresos,
       columns,
       gastos,
-      submitNewValue,
       ingresosSum,
       gastosSum,
       actualAmount,
-      addForm,
       deleteInfo,
-      submitting,
       saveChanges,
-      formValue,
       pendientes,
       deudas,
       saveConfig,
