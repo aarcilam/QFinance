@@ -28,7 +28,7 @@
         <template v-slot:body-cell-actions="props">
             <q-td :props="props">
             <div class="my-table-details">
-                <q-icon name="delete" v-on:click="deleteRow(props.rowIndex)" />
+                <q-icon name="delete" v-on:click="deleteItem(props.rowIndex)" />
             </div>
             </q-td>
         </template>
@@ -37,22 +37,27 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useStore } from 'vuex';
 
 export default defineComponent({
     name:'TableComponent',
     props: ['rows','columns','type'],
     setup(props,{emit}){
-        
-        const deleteRow=key=>{
-            emit('deleteRow',props.type , key)
-        };
+        const store = useStore();
 
         const saveChanges=()=>{
             emit('saveChanges')
         };
 
+        const deleteItem = (key)=>{
+            store.dispatch('deleteValue',{
+                type:props.type,
+                key
+            });
+        }
+
         return {
-            deleteRow,
+            deleteItem,
             saveChanges
         }
     }

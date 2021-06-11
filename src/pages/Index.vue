@@ -106,20 +106,20 @@
     </div>
     <div class="row q-col-gutter-sm">
       <div class="col-12 col-sm-6">
-        <TableComponent :rows="ingresos" :columns="columns" type="ingresos" @deleteRow="deleteValue" @saveChanges="saveChanges" />
+        <SlideListComponent :rows="ingresos" type="ingresos"/>
       </div>
       <div class="col-12 col-sm-6">
-        <TableComponent :rows="gastos" :columns="columns" type="gastos" @deleteRow="deleteValue" @saveChanges="saveChanges" />
+        <SlideListComponent :rows="gastos" type="gastos"/>
       </div>
     </div>
     <br>
     <br>
     <div class="row q-col-gutter-sm">
       <div class="col-12 col-sm-6">
-        <TableComponent :rows="pendientes" :columns="columns" type="pendientes" @deleteRow="deleteValue" @saveChanges="saveChanges" />
+        <TableComponent :rows="pendientes" :columns="columns" type="pendientes" @saveChanges="saveChanges" />
       </div>
       <div class="col-12 col-sm-6">
-        <TableComponent :rows="deudas" :columns="columns" type="deudas" @deleteRow="deleteValue" @saveChanges="saveChanges" />
+        <TableComponent :rows="deudas" :columns="columns" type="deudas" @saveChanges="saveChanges" />
       </div>
     </div>
   </q-page>
@@ -130,11 +130,13 @@ import { useQuasar } from 'quasar';
 import { useStore } from 'vuex';
 import { defineComponent,ref,onMounted,computed } from 'vue';
 import {moneyFormat} from '../helper';
+
 import TableComponent from '../components/Table.vue';
+import SlideListComponent from '../components/SlideList.vue';
 
 export default defineComponent({
   name: 'PageIndex',
-  components: {TableComponent},
+  components: {TableComponent,SlideListComponent},
   setup(){
     const $q = useQuasar();
     const store = useStore();
@@ -204,14 +206,6 @@ export default defineComponent({
           ]
         })
     }
-
-    const deleteValue = (type,key) =>{
-      store.dispatch('deleteValue',{
-              type,
-              key
-            });
-      $q.notify('Dato eliminado');
-    };
 
     const saveChanges = ()=>{
       store.dispatch('saveLocal');
@@ -303,7 +297,6 @@ export default defineComponent({
       deleteInfo,
       submitting,
       saveChanges,
-      deleteValue,
       formValue,
       pendientes,
       deudas,
