@@ -14,10 +14,10 @@
               <q-input 
               placeholder="First amount" 
               outlined 
-              v-model="config.firstAmount" 
+              v-model="firstAmount" 
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'El valor actual tiene que tener un valor']" 
-              v-on:change="saveChanges"
+              v-on:change="saveConfig"
               />
             </q-form>
             <br>
@@ -29,7 +29,6 @@
       </q-btn-dropdown>
       <q-btn color="primary" label="Ver linea de tiempo" to="/timeline"/>
       <q-btn color="primary" label="datos en json" to="/expimp"/>
-      <q-btn color="positive" label="Guardar cambios" v-on:click="saveChanges" v-if="!savedChanges"/>
     </div>
     <div class="row">
       <div class="col-12 col-sm-6 q-py-xl">
@@ -87,7 +86,7 @@
           <thead>
             <tr>
               <th class="text-left">Dinero incial</th>
-              <th class="text-right">{{moneyFormat(config.firstAmount)}}</th>
+              <th class="text-right">{{moneyFormat(firstAmount)}}</th>
             </tr>
           </thead>
           <tbody>
@@ -130,7 +129,7 @@
 
 <script>
 import { useQuasar } from 'quasar';
-
+import { useStore } from 'vuex';
 import { defineComponent,ref,onMounted,computed } from 'vue';
 import {moneyFormat} from '../helper';
 import TableComponent from '../components/Table.vue';
@@ -140,20 +139,20 @@ export default defineComponent({
   components: {TableComponent},
   setup(){
     const $q = useQuasar();
+    const store = useStore();
+    store.dispatch('getLocal');   
     const title = ref('');
     const amount = ref('');
     const type = ref(false);
-    const ingresos = ref([]);
-    const gastos = ref([]);
-    const pendientes = ref([]);
-    const deudas = ref([]);
+    const firstAmount= ref(store.getters.getConfig.firstAmount);
+    const ingresos = store.getters.getIngresos;
+    const gastos = store.getters.getGastos;
+    const pendientes = store.getters.getPendientes;
+    const deudas = store.getters.getDeudas;
+    const config = store.getters.getConfig;
     const addForm = ref(null);
     const submitting = ref(false);
-    const savedChanges = ref(true);
     const formValue = ref('1');
-    const config = ref({
-      firstAmount: null
-    });
 
     const columns = [
       { name: 'date', label: 'Fecha', field: 'date', sortable: true },
@@ -173,28 +172,18 @@ export default defineComponent({
     })
 
     const ingresosSum = computed(() => {
-      return getSumByKey(ingresos.value,'amount');
+      return getSumByKey(ingresos,'amount');
     });
 
     const gastosSum = computed(() => {
-      return getSumByKey(gastos.value,'amount');
+      return getSumByKey(gastos,'amount');
     });
 
     const actualAmount = computed(()=>{
-      return Number(config.value.firstAmount)+Number(ingresosSum.value)-Number(gastosSum.value);
+      return Number(config.firstAmount)+Number(ingresosSum.value)-Number(gastosSum.value);
     });
 
     onMounted(() => {
-    
-      let alldata = $q.localStorage.getItem('alldata');
-      if(alldata){
-        let data = JSON.parse(alldata);
-        gastos.value = data.gastos || [];
-        ingresos.value = data.ingresos || [];
-        config.value = data.config || [];
-        pendientes.value = data.pendientes || [];
-        deudas.value = data.deudas || [];
-      }
       
     })
 
@@ -210,8 +199,8 @@ export default defineComponent({
           actions: [
             { label: 'Eliminar', color: 'red', handler: () => { 
               $q.localStorage.set('alldata', JSON.stringify([]));
-              gastos.value = [];
-              ingresos.value = [];
+              gastos = [];
+              ingresos = [];
             } },
             { label: 'No', color: 'white', handler: () => { /* ... */ } }
           ]
@@ -219,34 +208,21 @@ export default defineComponent({
     }
 
     const deleteValue = (type,key) =>{
-      if(type=='gastos'){
-        gastos.value.splice(key, 1);
-      }
-      if(type=='ingresos'){
-        ingresos.value.splice(key, 1);
-      }
-      if(type=='pendientes'){
-        pendientes.value.splice(key, 1);
-      }
-      if(type=='deudas'){
-        deudas.value.splice(key, 1);
-      }
+      store.dispatch('deleteValue',{
+              type,
+              key
+            });
       $q.notify('Dato eliminado');
-      saveChanges();
     };
 
     const saveChanges = ()=>{
-      $q.localStorage.set('alldata', JSON.stringify(
-        {
-          config:config.value,
-          ingresos:ingresos.value,
-          gastos:gastos.value,
-          pendientes:pendientes.value,
-          deudas:deudas.value
-        }
-        ));
-      $q.notify('Datos guardados');
-      savedChanges.value = true;
+      store.dispatch('saveLocal');
+    };
+
+    const saveConfig = ()=>{
+      store.dispatch('addConfig',{
+        firstAmount: firstAmount.value
+      });
     };
 
     const reset=()=>{
@@ -264,13 +240,19 @@ export default defineComponent({
             date:new Date().toISOString().slice(0, 10),
             title: title.value,
             amount: amount.value,
-            type: typeName,
+            type: typeName.value,
             archived: false
           };
           if(type.value==true){
-            gastos.value.push(value);
+            store.dispatch('addValue',{
+              type:'gastos',
+              value
+            });
           }else{
-            ingresos.value.push(value);
+            store.dispatch('addValue',{
+              type:'ingresos',
+              value
+            });
           }
           break;
         case '2':
@@ -280,7 +262,10 @@ export default defineComponent({
             amount: amount.value,
             archived: false
           };
-          pendientes.value.push(value);
+          store.dispatch('addValue',{
+            type:'pendientes',
+            value
+          });
           break;
         case '3':
           value = {
@@ -289,11 +274,12 @@ export default defineComponent({
             amount: amount.value,
             archived: false
           };
-          deudas.value.push(value);
+          store.dispatch('addValue',{
+            type:'deudas',
+            value
+          });
           break;
       }
-
-      saveChanges();
 
       $q.notify('Valor añadido')
       addForm.value.resetValidation();
@@ -318,12 +304,13 @@ export default defineComponent({
       addForm,
       deleteInfo,
       submitting,
-      savedChanges,
       saveChanges,
       deleteValue,
       formValue,
       pendientes,
-      deudas
+      deudas,
+      saveConfig,
+      firstAmount
     }
   }
 })

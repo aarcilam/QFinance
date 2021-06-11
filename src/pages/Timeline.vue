@@ -26,30 +26,26 @@
 <script>
 import { defineComponent,ref,onMounted,computed } from 'vue';
 import { useQuasar } from 'quasar';
+import { useStore } from 'vuex';
 import {moneyFormat} from '../helper';
 
 export default defineComponent({
     name:'PageTimeline',
     setup(){
         const $q = useQuasar();
-        const ingresos = ref([]);
-        const gastos = ref([]);
+        const store = useStore();
+        store.dispatch('getLocal');   
+        const ingresos = store.getters.getIngresos;
+        const gastos = store.getters.getGastos;
 
         
 
         onMounted(() => {
         
-            let alldata = $q.localStorage.getItem('alldata');
-            if(alldata){
-                let data = JSON.parse(alldata);
-                gastos.value = data.gastos || [];
-                ingresos.value = data.ingresos || [];
-            }
-        
         })
 
         const entradas = computed(()=>{
-            let mixed = [...ingresos.value, ...gastos.value ];
+            let mixed = [...ingresos, ...gastos ];
             let sort = mixed.sort(function(a, b) {
                 let dateA = new Date(a.date);
                 let dateB = new Date(b.date);
