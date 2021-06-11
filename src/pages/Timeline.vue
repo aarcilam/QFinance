@@ -1,6 +1,5 @@
 <template>
     <q-page padding>
-        <q-btn color="primary" label="Back" to="/"/>
         <q-timeline color="secondary" class="q-pa-lg">
             <q-timeline-entry heading>
                 Linea de tiempo movimientos

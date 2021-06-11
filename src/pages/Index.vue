@@ -27,8 +27,6 @@
           </div>
         </div>
       </q-btn-dropdown>
-      <q-btn color="primary" label="Ver linea de tiempo" to="/timeline"/>
-      <q-btn color="primary" label="datos en json" to="/expimp"/>
     </div>
     <div class="row">
       <div class="col-12 col-sm-6 q-py-xl">

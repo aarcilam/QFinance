@@ -1,6 +1,5 @@
 <template>
     <q-page padding>
-        <q-btn color="primary" label="Back" to="/"/>
         <q-input
                 type="textarea"
                 v-model="localData"
