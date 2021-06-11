@@ -72,7 +72,7 @@
             unchecked-icon="savings"
             v-if="formValue=='1'"
           />
-          <q-btn color="primary" :loading="submitting" icon="add" label="Añadir" type="submit">
+          <q-btn color="primary" rounded :loading="submitting" icon="add" label="Añadir" type="submit">
             <template v-slot:loading>
               <q-spinner-facebook />
             </template>
