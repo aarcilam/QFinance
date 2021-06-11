@@ -1,5 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
+    <q-toolbar class="bg-primary text-white">
+
+      <q-toolbar-title>QFinance</q-toolbar-title>
+
+    </q-toolbar>
     <q-page-container>
       <router-view />
       <q-page-sticky expand class="q-pa-lg" position="bottom" :offset="[0, 0]">
