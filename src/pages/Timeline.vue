@@ -9,13 +9,13 @@
             <q-timeline-entry
             v-for="entrada in entradas"
             :key="entrada.id"
-            :title="entrada.title"
+            :title="moneyFormat(entrada.amount)"
             :subtitle="entrada.date"
             :color="entrada.type == 'ingreso' ? 'green' : 'red' "
             :icon="entrada.type == 'ingreso' ? 'savings' : 'price_check' "
             >
             <div>
-                {{moneyFormat(entrada.amount)}}
+                {{entrada.title}}
             </div>
             </q-timeline-entry>
 
