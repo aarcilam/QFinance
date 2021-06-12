@@ -11,8 +11,8 @@ const moduloLocalData = {
         pendientes: [],
         deudas: [],
         config: {
-            firstAmount: null,
-            userName: 'Prueba'
+            firstAmount: 0,
+            userName: 'User'
         }
     }),
     mutations: {
@@ -52,11 +52,11 @@ const moduloLocalData = {
             let alldata = LocalStorage.getItem('alldata');
             if (alldata) {
                 let data = JSON.parse(alldata);
-                state.gastos = data.gastos || [];
-                state.ingresos = data.ingresos || [];
-                state.config = data.config || {};
-                state.pendientes = data.pendientes || [];
-                state.deudas = data.deudas || [];
+                state.gastos = data.gastos || state.gastos;
+                state.ingresos = data.ingresos || state.ingresos;
+                state.config = data.config || state.config;
+                state.pendientes = data.pendientes || state.pendientes;
+                state.deudas = data.deudas || state.deudas;
             }
         },
         saveLocal(state) {
