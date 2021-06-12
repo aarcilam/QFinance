@@ -53,6 +53,7 @@ import { useQuasar } from 'quasar';
 import { useStore } from 'vuex';
 import { defineComponent,ref,onMounted,computed } from 'vue';
 import {moneyFormat} from '../helper';
+import {useRouter} from 'vue-router'
 
 import TableComponent from '../components/Table.vue';
 import SlideListComponent from '../components/SlideList.vue';
@@ -63,6 +64,7 @@ export default defineComponent({
   setup(){
     const $q = useQuasar();
     const store = useStore();
+    const router = useRouter();
     store.dispatch('getLocal');   
     const firstAmount= store.getters.getConfig.firstAmount;
     const userName= store.getters.getConfig.userName;
@@ -71,6 +73,12 @@ export default defineComponent({
     const pendientes = store.getters.getPendientes;
     const deudas = store.getters.getDeudas;
     const config = store.getters.getConfig;
+
+    onMounted(() => {
+      if(firstAmount==0){
+        router.push('/expimp');
+      }
+    })
 
     const columns = [
       { name: 'date', label: 'Fecha', field: 'date', sortable: true },
@@ -92,10 +100,6 @@ export default defineComponent({
     const actualAmount = computed(()=>{
       return Number(config.firstAmount)+Number(ingresosSum.value)-Number(gastosSum.value);
     });
-
-    onMounted(() => {
-      
-    })
 
     const getSumByKey = (arr, key) => {
       return arr.filter(({archived}) => archived === false).reduce((accumulator, current) => accumulator + Number(current[key]), 0);

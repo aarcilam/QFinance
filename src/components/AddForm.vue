@@ -58,7 +58,7 @@
             </q-card-section>
         </q-card>
     </q-dialog>
-    <q-page-sticky position="bottom-right" :offset="[20, 80]">
+    <q-page-sticky position="bottom-right" :offset="[25, 80]">
         <q-btn fab icon="add" color="accent" @click="openDialog" />
     </q-page-sticky>
     
