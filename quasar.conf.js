@@ -84,7 +84,7 @@ module.exports = configure(function(ctx) {
         framework: {
             config: {
                 notify: {
-                    position: 'bottom-right',
+                    position: 'top',
                     color: 'primary'
                 }
             },

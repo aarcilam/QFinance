@@ -67,7 +67,10 @@ const moduloLocalData = {
                 pendientes: state.pendientes,
                 deudas: state.deudas
             }));
-            Notify.create('Datos guardados');
+            Notify.create({
+                type: 'positive',
+                message: 'Datos guardados con exito'
+            });
             console.log("guardo en stage");
         },
         addConfig(state, payload) {

@@ -149,8 +149,6 @@ export default {
                 });
                 break;
             }
-
-            $q.notify('Valor añadido')
             addForm.value.resetValidation();
             reset();
             submitting.value = false;
