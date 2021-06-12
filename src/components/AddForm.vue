@@ -1,6 +1,11 @@
 <template padding>
-    <q-dialog v-model="dialog" position="bottom">
+    <q-dialog v-model="dialog" position="standard">
         <q-card>
+            <q-card-section class="row items-center q-pb-none">
+                <div class="text-h6">Añade un valor</div>
+                <q-space />
+                <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
             <q-card-section>
                 <q-form
                 @submit="submitNewValue"
