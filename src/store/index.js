@@ -11,7 +11,8 @@ const moduloLocalData = {
         pendientes: [],
         deudas: [],
         config: {
-            firstAmount: null
+            firstAmount: null,
+            userName: 'Prueba'
         }
     }),
     mutations: {

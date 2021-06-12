@@ -2,7 +2,7 @@
     <q-page padding>
         <q-timeline color="secondary" class="q-pa-lg">
             <q-timeline-entry heading>
-                Linea de tiempo movimientos
+                <h5 class="text-center text-h6 q-my-xl">Linea de tiempo movimientos</h5>
             </q-timeline-entry>
 
             <q-timeline-entry

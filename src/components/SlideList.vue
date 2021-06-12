@@ -1,6 +1,6 @@
 <template>
     <template v-if="rows.length>0">
-        <h6 class="text-subtitle2">{{type}}</h6>
+        <h5 class="text-subtitle2  text-center">{{type}}</h5>
         <q-list separator>
             <q-slide-item v-for="(row, index) in rows" :key="row.title"  @left="onLeft" left-color="secondary">
                 <template v-slot:left>
@@ -22,7 +22,7 @@
         </q-list>
     </template>
     <template v-if="rows.length==0">
-        <h5>No tienes {{type}} creados</h5>
+        <h6 class="text-subtitle2 text-center">No tienes {{type}} creados</h6>
     </template>
 </template>
 

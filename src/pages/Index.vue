@@ -1,33 +1,6 @@
 <template>
   <q-page padding>
-    <div class="row">
-      <q-btn-dropdown
-      color="secondary"
-      icon="settings"
-      >
-        <div class="row no-wrap q-pa-md">
-          <div class="column items-center">
-            <q-form
-              class="q-gutter-md"
-              ref="addForm"
-            >
-              <q-input 
-              placeholder="First amount" 
-              outlined 
-              v-model="firstAmount" 
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'El valor actual tiene que tener un valor']" 
-              v-on:change="saveConfig"
-              />
-            </q-form>
-            <br>
-            <q-separator />
-            <br>
-            <q-btn color="negative" label="Eliminar datos" v-on:click="deleteInfo()"  />
-          </div>
-        </div>
-      </q-btn-dropdown>
-    </div>
+    <h5 class="text-center text-h6 q-my-xl">Hola, {{userName}}</h5>
     <div class="row">
       <div class="col-12 col-sm-6 q-pa-md">
         <q-markup-table dark class="bg-primary">
@@ -91,7 +64,8 @@ export default defineComponent({
     const $q = useQuasar();
     const store = useStore();
     store.dispatch('getLocal');   
-    const firstAmount= ref(store.getters.getConfig.firstAmount);
+    const firstAmount= store.getters.getConfig.firstAmount;
+    const userName= store.getters.getConfig.userName;
     const ingresos = store.getters.getIngresos;
     const gastos = store.getters.getGastos;
     const pendientes = store.getters.getPendientes;
@@ -127,30 +101,8 @@ export default defineComponent({
       return arr.filter(({archived}) => archived === false).reduce((accumulator, current) => accumulator + Number(current[key]), 0);
     }
 
-    const deleteInfo = ()=>{
-      $q.notify({
-          message: 'Quieres eliminar el localStorage',
-          color: 'primary',
-          avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          actions: [
-            { label: 'Eliminar', color: 'red', handler: () => { 
-              $q.localStorage.set('alldata', JSON.stringify([]));
-              gastos = [];
-              ingresos = [];
-            } },
-            { label: 'No', color: 'white', handler: () => { /* ... */ } }
-          ]
-        })
-    }
-
     const saveChanges = ()=>{
       store.dispatch('saveLocal');
-    };
-
-    const saveConfig = ()=>{
-      store.dispatch('addConfig',{
-        firstAmount: firstAmount.value
-      });
     };
 
     return{
@@ -162,12 +114,11 @@ export default defineComponent({
       ingresosSum,
       gastosSum,
       actualAmount,
-      deleteInfo,
       saveChanges,
       pendientes,
       deudas,
-      saveConfig,
-      firstAmount
+      firstAmount,
+      userName
     }
   }
 })
