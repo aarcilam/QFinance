@@ -1,5 +1,6 @@
 import { LocalStorage } from 'quasar'
 import { Notify } from 'quasar'
+import { filterArrayRanges } from '../helper';
 
 export default {
     state: () => ({
@@ -9,7 +10,8 @@ export default {
         deudas: [],
         config: {
             firstAmount: 0,
-            userName: 'User'
+            userName: 'User',
+            datesRange: null
         }
     }),
     mutations: {
@@ -98,13 +100,45 @@ export default {
         getIngresos(state) {
             return state.ingresos;
         },
+        getRangeIngresos(state) {
+            if (state.config.datesRange != null) {
+                let from = new Date(state.config.datesRange.from);
+                let to = new Date(state.config.datesRange.to);
+                return filterArrayRanges(state.ingresos, from, to);
+            }
+            return state.ingresos;
+        },
         getGastos(state) {
+            return state.gastos;
+        },
+        getRangeGastos(state) {
+            if (state.config.datesRange != null) {
+                let from = new Date(state.config.datesRange.from);
+                let to = new Date(state.config.datesRange.to);
+                return filterArrayRanges(state.gastos, from, to);
+            }
             return state.gastos;
         },
         getPendientes(state) {
             return state.pendientes;
         },
+        getRangePendientes(state) {
+            if (state.config.datesRange != null) {
+                let from = new Date(state.config.datesRange.from);
+                let to = new Date(state.config.datesRange.to);
+                return filterArrayRanges(state.pendientes, from, to);
+            }
+            return state.pendientes;
+        },
         getDeudas(state) {
+            return state.deudas;
+        },
+        getRangeDeudas(state) {
+            if (state.config.datesRange != null) {
+                let from = new Date(state.config.datesRange.from);
+                let to = new Date(state.config.datesRange.to);
+                return filterArrayRanges(state.deudas, from, to);
+            }
             return state.deudas;
         },
         getConfig(state) {

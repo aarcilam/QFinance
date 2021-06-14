@@ -34,8 +34,8 @@ export default defineComponent({
         const $q = useQuasar();
         const store = useStore();
         store.dispatch('getLocal');   
-        const ingresos = store.getters.getIngresos;
-        const gastos = store.getters.getGastos;
+        const ingresos = store.getters.getRangeIngresos;
+        const gastos = store.getters.getRangeGastos;
 
         
 

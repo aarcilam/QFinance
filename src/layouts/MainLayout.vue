@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-page-container>
+    <q-page-container class="page-cont">
       <router-view />
       <AddFormComponent/>
       <BottomNavComponent/>
@@ -22,3 +22,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style scoped>
+  .page-cont{
+    margin-bottom: 150px;
+  }
+</style>

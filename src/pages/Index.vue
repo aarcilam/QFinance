@@ -68,10 +68,10 @@ export default defineComponent({
     store.dispatch('getLocal');   
     const firstAmount= store.getters.getConfig.firstAmount;
     const userName= store.getters.getConfig.userName;
-    const ingresos = store.getters.getIngresos;
-    const gastos = store.getters.getGastos;
-    const pendientes = store.getters.getPendientes;
-    const deudas = store.getters.getDeudas;
+    const ingresos = store.getters.getRangeIngresos;
+    const gastos = store.getters.getRangeGastos;
+    const pendientes = store.getters.getRangePendientes;
+    const deudas = store.getters.getRangeDeudas;
     const config = store.getters.getConfig;
 
     onMounted(() => {

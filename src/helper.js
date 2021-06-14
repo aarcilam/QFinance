@@ -6,3 +6,11 @@ export const moneyFormat = string => {
     });
     return money;
 };
+
+export const filterArrayRanges = (items, from, to) => {
+    let resultProductData = items.filter(a => {
+        var date = new Date(a.date);
+        return (date >= from && date <= to);
+    });
+    return resultProductData;
+};

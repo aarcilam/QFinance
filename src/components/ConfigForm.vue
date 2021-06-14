@@ -18,6 +18,11 @@
         :rules="[ val => val && val.length > 0 || 'El valor actual tiene que tener un valor']" 
         v-on:change="saveConfig"
     />
+    <h5 class="text-center text-h6 q-my-xl">Rango de fechas de la info</h5>
+    <div class="text-center">
+        <q-date @range-end="saveConfig" v-model="datesRange" range mask="YYYY-MM-DD" />
+    </div>
+
 </template>
 
 <script>
@@ -31,18 +36,21 @@ export default {
         const store = useStore();
         const firstAmount= ref(store.getters.getConfig.firstAmount);
         const userName= ref(store.getters.getConfig.userName);
+        const datesRange = ref(store.getters.getConfig.datesRange);
 
         const saveConfig = ()=>{
             store.dispatch('addConfig',{
                 firstAmount: firstAmount.value,
-                userName: userName.value
+                userName: userName.value,
+                datesRange: datesRange.value
             });
         };
 
         return{
             firstAmount,
             userName,
-            saveConfig
+            saveConfig,
+            datesRange
         }
     }
 }
