@@ -11,13 +11,13 @@
                 </template>
 
                 <q-item>
-                <q-item-section avatar>
+                <q-item-section v-if="row.type=='ingreso'||row.type=='gasto'" avatar>
                     <q-avatar 
                     :color="row.type == 'ingreso' ? 'green' : 'red' "
                     :icon="row.type == 'ingreso' ? 'savings' : 'price_check' "
                     text-color="white" />
                 </q-item-section>
-                <q-item-section>{{row.title}} <strong>{{moneyFormat(row.amount)}}</strong></q-item-section>
+                <q-item-section>{{row.type}} {{row.title}} <strong>{{moneyFormat(row.amount)}}</strong></q-item-section>
                 </q-item>
             </q-slide-item>
         </q-list>

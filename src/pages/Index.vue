@@ -39,10 +39,10 @@
     <br>
     <div class="row q-col-gutter-sm">
       <div class="col-12 col-sm-6">
-        <TableComponent :rows="pendientes" :columns="columns" type="pendientes" @saveChanges="saveChanges" />
+        <SlideListComponent :rows="pendientes" type="pendientes"/>
       </div>
       <div class="col-12 col-sm-6">
-        <TableComponent :rows="deudas" :columns="columns" type="deudas" @saveChanges="saveChanges" />
+        <SlideListComponent :rows="deudas" type="deudas"/>
       </div>
     </div>
   </q-page>
@@ -55,12 +55,11 @@ import { defineComponent,ref,onMounted,computed } from 'vue';
 import {moneyFormat} from '../helper';
 import {useRouter} from 'vue-router'
 
-import TableComponent from '../components/Table.vue';
 import SlideListComponent from '../components/SlideList.vue';
 
 export default defineComponent({
   name: 'PageIndex',
-  components: {TableComponent,SlideListComponent},
+  components: {SlideListComponent},
   setup(){
     const $q = useQuasar();
     const store = useStore();
