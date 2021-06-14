@@ -20,7 +20,8 @@
     />
     <h5 class="text-center text-h6 q-my-xl">Rango de fechas de la info</h5>
     <div class="text-center">
-        <q-date @range-end="saveConfig" v-model="datesRange" range mask="YYYY-MM-DD" />
+        <q-btn color="primary" rounded  icon="delete" v-if="datesRange!=null" label="quitar filtro de fechas" v-on:click="clearDates" class="q-mb-lg"/>
+        <q-date @range-end="saveConfig" v-model="datesRange" range mask="YYYY-MM-DD" class="q-mb-lg" />
     </div>
 
 </template>
@@ -46,11 +47,17 @@ export default {
             });
         };
 
+        const clearDates=()=>{
+            datesRange.value = null;
+            saveConfig();
+        }
+
         return{
             firstAmount,
             userName,
             saveConfig,
-            datesRange
+            datesRange,
+            clearDates
         }
     }
 }
