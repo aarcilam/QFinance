@@ -17,7 +17,7 @@
                     :icon="row.type == 'ingreso' ? 'savings' : 'price_check' "
                     text-color="white" />
                 </q-item-section>
-                <q-item-section>{{row.type}} {{row.title}} <strong>{{moneyFormat(row.amount)}}</strong></q-item-section>
+                <q-item-section>{{row.title}} <strong>{{moneyFormat(row.amount)}}</strong></q-item-section>
                 </q-item>
             </q-slide-item>
         </q-list>
