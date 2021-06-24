@@ -2,7 +2,7 @@
     <template v-if="rows.length>0">
         <h5 class="text-subtitle2  text-center">{{type}}</h5>
         <q-list separator>
-            <q-slide-item v-for="(row, index) in rows" :key="row.title" @action="setTimer" @left="onLeft(index)" @right="onRight(index)" left-color="secondary" right-color="red">
+            <q-slide-item v-on:click="showMore(row,index)" v-for="(row, index) in rows" :key="row.title" @action="setTimer" @left="onLeft(index)" @right="onRight(index)" left-color="secondary" right-color="red">
                 <template v-slot:left>
                     <q-icon name="archive" /> Archivar
                 </template>
@@ -43,12 +43,14 @@
 import { onBeforeUnmount,ref } from 'vue';
 import { useStore } from 'vuex';
 import {moneyFormat} from '../helper';
+import {useRouter} from 'vue-router';
 
 export default {
     name:'SlideList',
     props: ['rows','type'],
     setup(props){
         const store = useStore();
+        const router = useRouter();
         let timer
         const selectedIndex = ref(null)
         const confirmDelete = ref(false)
@@ -86,13 +88,19 @@ export default {
             confirmDelete.value = true;
         }
 
+        const showMore = (item,index)=>{
+            console.log(item);
+            router.push({ name: 'details', params: { index:index,date: item.date,title:item.title,amount:item.amount,type:item.type } })
+        }
+
         return {
             onLeft,
             onRight,
             deleteItem,
             moneyFormat,
             setTimer,
-            confirmDelete
+            confirmDelete,
+            showMore
         }
     }
 }

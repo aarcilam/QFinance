@@ -16,6 +16,13 @@ const routes = [{
                 path: 'expimp',
                 component: () =>
                     import ('pages/ExportImport.vue')
+            },
+            {
+                path: 'details',
+                name: 'details',
+                props: true,
+                component: () =>
+                    import ('pages/Detail.vue')
             }
         ]
     },
