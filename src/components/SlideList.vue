@@ -1,8 +1,8 @@
 <template>
     <template v-if="rows.length>0">
-        <h5 class="text-subtitle2  text-center">{{type}}</h5>
+        <h5 class="text-subtitle2  text-center">{{type}} - ({{rows.length}})</h5>
         <q-list separator>
-            <q-slide-item v-on:click="showMore(row,index)" v-for="(row, index) in rows" :key="row.title" @action="setTimer" @left="onLeft(index)" @right="onRight(index)" left-color="secondary" right-color="red">
+            <q-slide-item v-on:click="showMore(row,index)" v-for="(row, index) in formatedRows" :key="row.title" @action="setTimer" @left="onLeft(index)" @right="onRight(index)" left-color="secondary" right-color="red">
                 <template v-slot:left>
                     <q-icon name="archive" /> Archivar
                 </template>
@@ -33,6 +33,9 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
+        <div class="text-center q-mt-md">
+            <q-btn color="primary" rounded v-if="rows.length>5" :label="toggleButton" v-on:click="toggleShow" class="q-mb-lg"/>
+        </div>
     </template>
     <template v-if="rows.length==0">
         <h6 class="text-subtitle2 text-center">No tienes {{type}} creados</h6>
@@ -40,9 +43,9 @@
 </template>
 
 <script>
-import { onBeforeUnmount,ref } from 'vue';
+import { onBeforeUnmount,ref,computed } from 'vue';
 import { useStore } from 'vuex';
-import {moneyFormat} from '../helper';
+import {moneyFormat,reverseArr} from '../helper';
 import {useRouter} from 'vue-router';
 
 export default {
@@ -54,6 +57,26 @@ export default {
         let timer
         const selectedIndex = ref(null)
         const confirmDelete = ref(false)
+        const showAll = ref(false)
+
+        const formatedRows = computed(()=>{
+            let rows = reverseArr(props.rows);
+            if(showAll.value){
+                return rows;
+            }
+            return rows.slice(0, 5);
+        })
+
+        const toggleButton = computed(()=>{
+            if(showAll.value){
+                return 'Ver menos';
+            }
+            return 'Ver más';
+        })
+
+        const toggleShow=()=>{
+            showAll.value = !showAll.value;
+        }
 
         function finalize (reset) {
         timer = setTimeout(() => {
@@ -66,9 +89,11 @@ export default {
         })
 
         const deleteItem = ()=>{
+            let index = (props.rows.length-1)-selectedIndex.value;
+            console.log(selectedIndex.value,index);
             store.dispatch('deleteValue',{
                 type:props.type,
-                key:selectedIndex.value
+                key:index
             });
             selectedIndex.value = null;
         }
@@ -100,7 +125,11 @@ export default {
             moneyFormat,
             setTimer,
             confirmDelete,
-            showMore
+            showMore,
+            formatedRows,
+            showAll,
+            toggleButton,
+            toggleShow
         }
     }
 }

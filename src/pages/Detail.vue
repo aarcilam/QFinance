@@ -1,7 +1,7 @@
 <template>
     <q-page padding>
         <h4>{{title}}</h4>
-        <strong>{{moneyFormat(amount)}}</strong>ç
+        <strong>{{moneyFormat(amount)}}</strong>
     </q-page>
 </template>
 
