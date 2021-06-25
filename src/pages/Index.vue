@@ -3,8 +3,9 @@
     <h5 class="text-center text-h6 q-my-xl">Hola, {{userName}}</h5>
     <div class="row">
       <div class="col-12 col-sm-6 q-pa-md">
+        <h5 class="text-center" v-if="rangeFiltered!=null">Filtrado por {{rangeFiltered.from}}/{{rangeFiltered.to}}</h5>
         <q-markup-table dark class="bg-primary">
-          <thead>
+          <thead v-if="rangeFiltered==null">
             <tr>
               <th class="text-left">Dinero incial</th>
               <th class="text-right">{{moneyFormat(firstAmount)}}</th>
@@ -19,7 +20,7 @@
               <td class="text-left">Gastos</td>
               <td class="text-right">{{moneyFormat(gastosSum)}}</td>
             </tr>
-            <tr>
+            <tr v-if="rangeFiltered==null">
               <td class="text-left">Total actual</td>
               <td class="text-right">{{moneyFormat(actualAmount)}}</td>
             </tr>
@@ -88,6 +89,10 @@ export default defineComponent({
 
     $q.dark.set(true);
 
+    const rangeFiltered = computed(() => {
+      return config.datesRange;
+    });
+
     const ingresosSum = computed(() => {
       return getSumByKey(ingresos,'amount');
     });
@@ -121,7 +126,8 @@ export default defineComponent({
       pendientes,
       deudas,
       firstAmount,
-      userName
+      userName,
+      rangeFiltered
     }
   }
 })
