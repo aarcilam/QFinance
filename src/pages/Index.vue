@@ -27,6 +27,20 @@
           </tbody>
         </q-markup-table>
       </div>
+      <div class="col-12 col-sm-6 q-pa-md">
+        <q-markup-table dark class="bg-secondary">
+          <tbody>
+            <tr>
+              <td class="text-left">Total Pendientes</td>
+              <td class="text-right">{{moneyFormat(pendientesSum)}}</td>
+            </tr>
+            <tr>
+              <td class="text-left">Total Deudas</td>
+              <td class="text-right">{{moneyFormat(deudasSum)}}</td>
+            </tr>
+          </tbody>
+        </q-markup-table>
+      </div>
     </div>
     <div class="row q-col-gutter-sm">
       <div class="col-12 col-sm-6">
@@ -101,6 +115,14 @@ export default defineComponent({
       return getSumByKey(gastos,'amount');
     });
 
+    const pendientesSum = computed(() => {
+      return getSumByKey(pendientes,'amount');
+    });
+
+    const deudasSum = computed(() => {
+      return getSumByKey(deudas,'amount');
+    });
+
     const actualAmount = computed(()=>{
       return Number(config.firstAmount)+Number(ingresosSum.value)-Number(gastosSum.value);
     });
@@ -127,7 +149,9 @@ export default defineComponent({
       deudas,
       firstAmount,
       userName,
-      rangeFiltered
+      rangeFiltered,
+      pendientesSum,
+      deudasSum
     }
   }
 })
